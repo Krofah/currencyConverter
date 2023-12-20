@@ -4,9 +4,11 @@ from decimal import Decimal, ROUND_HALF_UP
 import requests
 from typing import Any, Callable, Dict, Optional, Union
 
-def get_african_currency_rates(base_currency: str, date: Optional[str] = None) -> Dict[str, float]:
-    date = date or "latest"
-    url = f"https://api.example.com/african-currencies/{date}?base={base_currency.upper()}"
+LATEST = "latest"
+
+def get_major_currency_rates(base_currency: str, date: Optional[str] = None) -> Dict[str, float]:
+    date = date or LATEST
+    url = f"https://api.example.com/major-currencies/{date}?base={base_currency.upper()}"
     api_response = requests.get(url)
     rates_json: Dict[str, Dict[str, float]] = api_response.json()
     try:
@@ -22,7 +24,7 @@ def convert(
     date: Optional[str] = None,
     decimal_precision: int = 2,
 ) -> Decimal:
-    rates = get_african_currency_rates(base_currency, date)
+    rates = get_major_currency_rates(base_currency, date)
     target_currency = target_currency.upper()
     try:
         converted_amount = Decimal(amount) * Decimal(str(rates[target_currency]))
@@ -32,7 +34,6 @@ def convert(
     except InvalidOperation:
         raise ValueError(f'Invalid amount value "{amount}"')
 
-# Background code for factorial calculation
 def factorial(n: int) -> int:
     if n == 0:
         return 1
